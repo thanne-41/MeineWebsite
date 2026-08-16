@@ -315,7 +315,7 @@
               <span class="mono text-[12px] tracking-[.18em]">PACK ÖFFNEN</span>
               <span aria-hidden="true" class="text-lg">▸</span>
             </button>
-            <a id="beerBtn" class="btn btn-ghost" href="#beer">
+            <a id="beerBtn" class="btn btn-ghost" href="#beer" style="min-width: 170px;">
               <span class="mono text-[12px] tracking-[.18em]">BUY US A BEER</span>
               <span aria-hidden="true">🍺</span>
             </a>
@@ -331,9 +331,21 @@
               <div class="inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 text-white/90 backdrop-blur">
                 <span class="mono text-[12px] tracking-[.16em]">IN 3 SCHRITTEN</span>
                 <span class="h-1.5 w-1.5 rounded-full bg-white/80"></span>
-                <span class="text-sm">Pack öffnen → Sticker poppen → Screenshot schicken</span>
+                <span class="text-sm">Album voll? Sticker an ’nem wilden Ort? Foto rein.</span>
               </div>
               <div class="mt-5 rounded-2xl border border-white/20 bg-white/10 p-5 text-white/90 backdrop-blur">
+                <div class="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                  <div>
+                    <p class="mono text-[11px] tracking-[.18em] text-white/70">WO KLEBT EUER STICKER?</p>
+                    <p class="text-sm text-white/85">Album voll oder an ’nem wilden Ort geklebt? Foto rein.</p>
+                  </div>
+                  <label class="btn" style="background: rgba(255,255,255,.16); border-color: rgba(255,255,255,.35); color: #fff; box-shadow: 0 14px 44px rgba(0,0,0,.18);">
+                    <input id="uploadPhoto" type="file" accept="image/*" class="hidden" />
+                    <span class="mono text-[12px] tracking-[.18em]">FOTO HOCHLADEN</span>
+                    <span aria-hidden="true">↑</span>
+                  </label>
+                </div>
+
                 <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
                   <div>
                     <p class="mono text-xs tracking-[.16em] text-white/70">01</p>
@@ -343,7 +355,7 @@
                   <div>
                     <p class="mono text-xs tracking-[.16em] text-white/70">02</p>
                     <p class="mt-1 font-semibold">Sticker ziehen</p>
-                    <p class="mt-1 text-sm text-white/75">Fünf Dinger. Einer wird Legendär.</p>
+                    <p class="mt-1 text-sm text-white/75">Sechs Dinger. Einer wird Legendär.</p>
                   </div>
                   <div>
                     <p class="mono text-xs tracking-[.16em] text-white/70">03</p>
@@ -364,7 +376,7 @@
                     <div class="pack-title">
                       <p class="mono text-xs tracking-[.22em] text-slate-700">WORLD CUP FEELING</p>
                       <h2 class="display">PALMA<br/>NINI</h2>
-                      <p class="sub mono">STICKER PACK • 5 STK</p>
+                      <p class="sub mono">STICKER PACK • 6 STK</p>
                     </div>
                     <div class="pack-strip">
                       <div>
@@ -448,6 +460,7 @@
     const pack = document.getElementById('pack');
     const stage = document.getElementById('stickerStage');
     const spark = document.getElementById('spark');
+    const uploadPhoto = document.getElementById('uploadPhoto');
 
     const stickers = [
       { name: 'FLORIAN H.', badge: 'DE', tint: 'gold', img: 'assets/sticker/florian.h.png' },
@@ -464,9 +477,11 @@
       const s = document.createElement('div');
       s.className = 'sticker';
 
-      const r = (Math.random()*16 - 8).toFixed(2) + 'deg';
-      const tx = (Math.random()*320 - 160).toFixed(1) + 'px';
-      const ty = (Math.random()*220 - 110).toFixed(1) + 'px';
+      const r = (Math.random()*18 - 9).toFixed(2) + 'deg';
+
+      // wider, more vertical spread so all 6 can be seen on mobile
+      const tx = (Math.random()*460 - 230).toFixed(1) + 'px';
+      const ty = (Math.random()*380 - 190).toFixed(1) + 'px';
 
       s.style.setProperty('--r', r);
       s.style.setProperty('--tx', tx);
@@ -500,7 +515,8 @@
 
       s.appendChild(img);
 
-      s.style.animation = `pop 640ms cubic-bezier(.2,.95,.15,1) ${i*90}ms both`;
+      // slower + sequential cadence so every sticker gets its moment
+      s.style.animation = `pop 980ms cubic-bezier(.2,.95,.15,1) ${i*220}ms both`;
       return s;
     }
 
@@ -522,8 +538,8 @@
       // slight haptic vibe on supported devices
       if(navigator.vibrate) navigator.vibrate([15, 30, 15]);
 
-      // re-open allowed after a moment (for fun)
-      setTimeout(()=>{ opened = false; }, 1400);
+      // re-open allowed after the full sequence finishes
+      setTimeout(()=>{ opened = false; }, (stickers.length * 220) + 1200);
     }
 
     openBtn.addEventListener('click', openPack);
@@ -535,6 +551,17 @@
         openPack();
       }
     });
+
+    // upload (local only for now)
+    if(uploadPhoto){
+      uploadPhoto.addEventListener('change', () => {
+        const f = uploadPhoto.files && uploadPhoto.files[0];
+        if(!f) return;
+        const old = copyBtn.innerHTML;
+        copyBtn.innerHTML = '<span class="mono text-[12px] tracking-[.18em]">FOTO OK</span><span aria-hidden="true">✓</span>';
+        setTimeout(()=> copyBtn.innerHTML = old, 1100);
+      });
+    }
 
     // auto-open if URL has ?open=1
     const params = new URLSearchParams(location.search);
