@@ -3,24 +3,21 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MALLE SAMMELSPA? — Pack öffnen</title>
+  <title>PALMANINI ’94 — Pack öffnen</title>
   <meta name="description" content="PALMANINI ’94 — Pack öffnen und ein Bier ausgeben." />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
+
   <style>
     :root{
-      --paper:#f4efd8;
       --ink:#111827;
-      --star:#f8fafc;
-      --blue:#2447ff;
+      --blue:#2457ff;
       --red:#e11d48;
       --gold:#f59e0b;
       --grass:#1f9d55;
       --grass2:#167a43;
-      --sticker:#fffef6;
-      --shadow: rgba(0,0,0,.28);
     }
 
     html,body{height:100%;}
@@ -36,9 +33,7 @@
     }
 
     /* subtle paper wear */
-    .paper-noise{
-      position:relative;
-    }
+    .paper-noise{ position:relative; }
     .paper-noise::before{
       content:"";
       position:absolute;
@@ -56,7 +51,7 @@
 
     /* starfield */
     .starfield{
-      background-color: #2457ff;
+      background-color: var(--blue);
       background-image:
         radial-gradient(circle, rgba(248,250,252,.95) 1.3px, transparent 1.4px),
         radial-gradient(circle, rgba(248,250,252,.85) 1.05px, transparent 1.2px);
@@ -74,10 +69,7 @@
         linear-gradient(180deg, var(--grass) 0%, var(--grass2) 85%);
       border-top: 2px solid rgba(255,255,255,.22);
     }
-    .pitch-lines{
-      opacity:.75;
-      filter: drop-shadow(0 1px 0 rgba(0,0,0,.2));
-    }
+    .pitch-lines{ opacity:.75; filter: drop-shadow(0 1px 0 rgba(0,0,0,.2)); }
 
     /* type */
     .display{
@@ -89,126 +81,72 @@
       font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
     }
 
-    /* sticker cards */
-    .sticker{
-      background: linear-gradient(180deg, rgba(255,255,255,.95), rgba(255,255,255,.85));
-      border: 2px solid rgba(17,24,39,.9);
-      border-radius: 14px;
-      box-shadow:
-        0 18px 50px rgba(0,0,0,.25),
-        0 2px 0 rgba(255,255,255,.35) inset;
-      position:absolute;
-      width: 132px;
-      height: 176px;
-      transform: translate(-50%,-50%);
-      overflow:hidden;
-      user-select:none;
-    }
-    .sticker::before{
-      content:"";
+    /* Pack (image only) */
+    .packWrap{ position:relative; width: 320px; height: 250px; }
+    @media (min-width: 768px){ .packWrap{ width: 380px; height: 295px; } }
+
+    .pack{
       position:absolute;
       inset:0;
-      background:
-        repeating-linear-gradient(0deg, rgba(0,0,0,.05), rgba(0,0,0,.05) 1px, transparent 1px, transparent 4px),
-        radial-gradient(300px 120px at 30% 20%, rgba(245,158,11,.16), transparent 60%),
-        radial-gradient(240px 160px at 70% 85%, rgba(225,29,72,.12), transparent 60%);
-      opacity:.35;
+      transform: rotate(-2deg);
+      transform-origin: center;
+      will-change: transform;
+    }
+    .pack img{
+      width:100%;
+      height:100%;
+      object-fit:contain;
+      display:block;
       pointer-events:none;
-      mix-blend-mode:multiply;
+      filter: drop-shadow(0 10px 26px rgba(0,0,0,.20));
     }
 
-    .sticker .label{
+    /* remove the "floating studio" shadow: keep it subtle */
+    .packShadowOff img{ filter: drop-shadow(0 8px 18px rgba(0,0,0,.18)); }
+
+    /* rip: side tear illusion by clipping a diagonal slice from the right */
+    @keyframes ripSide {
+      0%   { clip-path: inset(0 0 0 0 round 18px); }
+      45%  { clip-path: polygon(0 0, 86% 0, 100% 18%, 100% 82%, 86% 100%, 0 100%); }
+      100% { clip-path: polygon(0 0, 76% 0, 100% 22%, 100% 78%, 76% 100%, 0 100%); }
+    }
+
+    @keyframes packWiggle{
+      0%{ transform: rotate(-2deg) translateY(0); }
+      25%{ transform: rotate(1.8deg) translateY(-2px); }
+      55%{ transform: rotate(-1.2deg) translateY(1px); }
+      100%{ transform: rotate(-2deg) translateY(0); }
+    }
+
+    /* Stickers */
+    .stickerStage{ position:absolute; inset:-20px; pointer-events:none; }
+
+    .sticker{
       position:absolute;
-      left:10px;
-      right:10px;
-      bottom:10px;
-      background: rgba(17,24,39,.92);
-      color: #fff;
-      border-radius: 10px;
-      padding: 8px 10px;
-      font-size: 12px;
-      line-height: 1.1;
-      display:flex;
-      justify-content: space-between;
-      align-items:center;
-      gap:8px;
+      left:50%;
+      top:50%;
+      width: 148px;
+      height: 208px;
+      transform: translate(-50%,-50%);
+      border-radius: 12px;
+      filter: drop-shadow(0 12px 24px rgba(0,0,0,.22));
+      will-change: transform, opacity;
     }
-    .sticker .badge{
-      background: rgba(245,158,11,.95);
-      color:#111827;
-      font-weight:700;
-      padding: 2px 8px;
-      border-radius: 999px;
-      font-size: 11px;
-      letter-spacing: .06em;
+    .sticker img{
+      width:100%;
+      height:100%;
+      object-fit:contain;
+      display:block;
+      border-radius: 12px;
     }
 
-    /* Pack */
-    .pack{
-      width: 300px;
-      height: 410px;
-      border-radius: 20px;
-      border: 0;
-      background: transparent;
-      box-shadow:
-        0 40px 90px rgba(0,0,0,.28);
-      position:relative;
-      transform: rotate(-1.2deg);
-      overflow: visible;
+    @keyframes deal {
+      0%{ transform: translate(-50%,-50%) scale(.20) rotate(var(--r)); opacity:0; }
+      60%{ transform: translate(calc(-50% + var(--tx)), calc(-50% + var(--ty))) scale(1.06) rotate(calc(var(--r) * .65)); opacity:1; }
+      100%{ transform: translate(calc(-50% + var(--tx)), calc(-50% + var(--ty))) scale(1) rotate(var(--r)); opacity:1; }
     }
 
-    
-    .tear{
-      position:absolute;
-      top:0;
-      left:-8px;
-      right:-8px;
-      height: 70px;
-      background: rgba(255,255,255,.1);
-      clip-path: polygon(0 35%, 6% 45%, 13% 30%, 20% 48%, 28% 34%, 36% 52%, 44% 32%, 52% 50%, 61% 34%, 69% 54%, 78% 36%, 86% 50%, 94% 33%, 100% 42%, 100% 0, 0 0);
-      border-bottom: 2px solid rgba(17,24,39,.75);
-    }
-
-    .pack-title{
-      position:absolute;
-      top: 80px;
-      left: 18px;
-      right: 18px;
-      padding: 16px 16px 14px;
-      background: rgba(255,255,255,.92);
-      border: 2px solid rgba(17,24,39,.9);
-      border-radius: 16px;
-      box-shadow: 0 10px 30px rgba(0,0,0,.18);
-    }
-
-    .pack-title h2{
-      font-size: 40px;
-      line-height: .9;
-    }
-
-    .pack-title .sub{
-      font-size: 12px;
-      letter-spacing: .18em;
-      color: rgba(17,24,39,.8);
-      margin-top: 8px;
-    }
-
-    .pack-strip{
-      position:absolute;
-      bottom: 18px;
-      left: 18px;
-      right: 18px;
-      background: rgba(17,24,39,.9);
-      color:#fff;
-      border-radius: 16px;
-      border: 2px solid rgba(255,255,255,.2);
-      padding: 14px 14px;
-      display:flex;
-      justify-content: space-between;
-      align-items:center;
-      gap: 12px;
-    }
-
+    /* buttons */
     .btn{
       display:inline-flex;
       align-items:center;
@@ -231,6 +169,7 @@
       background: linear-gradient(180deg, rgba(245,158,11,.98), rgba(225,29,72,.9));
       color: #111827;
       border-color: rgba(17,24,39,.95);
+      min-width: 220px;
     }
 
     .btn-ghost{
@@ -239,54 +178,17 @@
       border-color: rgba(255,255,255,.35);
       box-shadow: 0 14px 44px rgba(0,0,0,.20);
       backdrop-filter: blur(6px);
-    }
-
-    .spark{
-      position:absolute;
-      inset:0;
-      pointer-events:none;
-      opacity:0;
-      background:
-        radial-gradient(18px 18px at 20% 30%, rgba(255,255,255,.95), transparent 60%),
-        radial-gradient(20px 20px at 72% 22%, rgba(255,255,255,.9), transparent 60%),
-        radial-gradient(14px 14px at 54% 58%, rgba(255,255,255,.85), transparent 60%),
-        radial-gradient(16px 16px at 78% 62%, rgba(245,158,11,.95), transparent 62%),
-        radial-gradient(18px 18px at 38% 70%, rgba(225,29,72,.95), transparent 62%);
-      filter: blur(.3px);
-    }
-
-    /* animation */
-    @keyframes pop{
-      0%{ transform: translate(-50%,-50%) scale(.2) rotate(var(--r)); opacity:0; }
-      60%{ transform: translate(calc(-50% + var(--tx)), calc(-50% + var(--ty))) scale(1.08) rotate(calc(var(--r) * .7)); opacity:1; }
-      100%{ transform: translate(calc(-50% + var(--tx)), calc(-50% + var(--ty))) scale(1) rotate(var(--r)); opacity:1; }
-    }
-
-    @keyframes packWiggle{
-      0%{ transform: rotate(-1.2deg) scale(.92) translateY(0); }
-      25%{ transform: rotate(1.4deg) scale(.92) translateY(-3px); }
-      55%{ transform: rotate(-1.0deg) scale(.92) translateY(2px); }
-      100%{ transform: rotate(-1.2deg) scale(.92) translateY(0); }
-    }
-
-    @keyframes ripOpen{
-      0%{ clip-path: inset(0 0 0 0 round 18px); }
-      55%{ clip-path: inset(0 0 58% 0 round 18px); }
-      100%{ clip-path: inset(0 0 68% 0 round 18px); }
-    }
-
-    @keyframes sparkOn{
-      0%{ opacity:0; }
-      20%{ opacity:.9; }
-      100%{ opacity:0; }
+      min-width: 56px;
+      padding-left: 14px;
+      padding-right: 14px;
     }
 
     @media (prefers-reduced-motion: reduce){
       *{ animation: none !important; transition: none !important; scroll-behavior: auto !important; }
     }
-
   </style>
 </head>
+
 <body class="paper-noise">
   <main class="min-h-screen">
     <section class="relative starfield">
@@ -294,12 +196,8 @@
         <div class="flex flex-col items-start gap-6 md:flex-row md:items-end md:justify-between">
           <div class="max-w-2xl">
             <p class="mono text-xs tracking-[.22em] text-white/80">LIMITED RUN • SOMMER ’26</p>
-            <h1 class="display mt-3 text-5xl leading-[.92] text-white drop-shadow-[0_2px_0_rgba(0,0,0,.35)] md:text-7xl">
-              PALMANINI ’94
-            </h1>
-            <p class="mt-4 text-white/90 md:text-lg">
-              Original Edition öffnen :)
-            </p>
+            <h1 class="display mt-3 text-5xl leading-[.92] text-white drop-shadow-[0_2px_0_rgba(0,0,0,.35)] md:text-7xl">PALMANINI ’94</h1>
+            <p class="mt-4 text-white/90 md:text-lg">Original Edition öffnen :)</p>
           </div>
 
           <div class="flex flex-wrap items-center gap-3">
@@ -307,8 +205,8 @@
               <span class="mono text-[12px] tracking-[.18em]">PACK ÖFFNEN</span>
               <span aria-hidden="true" class="text-lg">▸</span>
             </button>
-            <a id="beerBtn" class="btn btn-ghost" href="#beer" style="min-width: 170px;">
-              <span class="mono text-[12px] tracking-[.18em]">BUY US A BEER</span>
+            <a id="beerBtn" class="btn btn-ghost" href="#beer" aria-label="Buy us a beer">
+              <span class="mono text-[12px] tracking-[.18em] hidden md:inline">BUY US A BEER</span>
               <span aria-hidden="true">🍺</span>
             </a>
           </div>
@@ -318,24 +216,27 @@
       <div class="pitch mt-3 md:mt-10" style="scroll-margin-top: 18px;">
         <div class="mx-auto max-w-6xl px-5 py-10 md:py-14">
           <div class="grid grid-cols-1 gap-6 md:grid-cols-2 md:items-center">
-            <!-- mobile-first: pack first, text second -->
+
+            <!-- text -->
             <div class="relative order-2 md:order-1">
-              <div class="inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 text-white/90 backdrop-blur">
-                <span class="mono text-[12px] tracking-[.16em]">IN 3 SCHRITTEN</span>
-                <span class="h-1.5 w-1.5 rounded-full bg-white/80"></span>
-                <span class="text-sm">Album voll? Sticker an ’nem wilden Ort? Foto rein.</span>
-              </div>
-              <div class="mt-5 rounded-2xl border border-white/20 bg-white/10 p-5 text-white/90 backdrop-blur">
-                <div class="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                  <div>
-                    <p class="mono text-[11px] tracking-[.18em] text-white/70">WO KLEBT EUER STICKER?</p>
-                    <p class="text-sm text-white/85">Album voll oder an ’nem wilden Ort geklebt? Foto rein.</p>
+
+              <div class="mt-5 rounded-3xl border border-white/25 bg-gradient-to-br from-white/18 via-white/10 to-white/6 p-5 text-white/95 backdrop-blur" style="box-shadow: 0 26px 80px rgba(0,0,0,.25);">
+                <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                  <div class="max-w-xl">
+                    <p class="mono text-[11px] tracking-[.22em] text-white/75">WO KLEBT EUER STICKER?</p>
+                    <p class="mt-1 display text-2xl leading-[1]">Zeig’s uns.</p>
+                    <p class="mt-2 text-sm text-white/85">Album voll oder an ’nem wilden Ort geklebt? Foto hochladen — wir packen’s in die Hall of Fame.</p>
                   </div>
-                  <label class="btn" style="background: rgba(255,255,255,.16); border-color: rgba(255,255,255,.35); color: #fff; box-shadow: 0 14px 44px rgba(0,0,0,.18);">
+
+                  <label class="btn btn-primary" style="min-width: 210px; box-shadow: 0 18px 60px rgba(0,0,0,.25);">
                     <input id="uploadPhoto" type="file" accept="image/*" class="hidden" />
                     <span class="mono text-[12px] tracking-[.18em]">FOTO HOCHLADEN</span>
                     <span aria-hidden="true">↑</span>
                   </label>
+                </div>
+
+                <div id="uploadHint" class="mt-4 hidden rounded-2xl border border-white/20 bg-white/10 px-4 py-3 text-white/85">
+                  <span class="mono text-[12px] tracking-[.18em]">FOTO OK</span> — kommt bald als Galerie / Story.
                 </div>
 
                 <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
@@ -358,17 +259,19 @@
               </div>
             </div>
 
+            <!-- pack -->
             <div class="relative order-1 md:order-2">
               <div class="mx-auto flex max-w-md items-center justify-center md:justify-end">
-                <div class="relative" style="min-height: 460px;">
-                  <div id="spark" class="spark"></div>
-                  <div id="pack" class="pack" aria-label="Sticker Pack" style="transform: rotate(-1.2deg) scale(.92); transform-origin: center;">
-                    <img src="assets/sticker/palmanini-pack.png" alt="PALMANINI ’94 Sticker Pack" style="position:absolute; inset:0; width:100%; height:100%; object-fit:contain; pointer-events:none; filter: drop-shadow(0 18px 42px rgba(0,0,0,.35));" />
-                    
+                <div class="relative" style="min-height: 420px;">
+
+                  <div class="packWrap">
+                    <div id="pack" class="pack packShadowOff" aria-label="Sticker Pack">
+                      <img id="packImg" src="assets/pack/palmanini-pack.png" alt="PALMANINI ’94 Sticker Pack" />
+                    </div>
+
+                    <div id="stickerStage" class="stickerStage" aria-hidden="true"></div>
                   </div>
 
-                  <div id="stickerStage" class="absolute inset-0" aria-hidden="true"></div>
-                  <div class="absolute -bottom-4 left-1/2 -translate-x-1/2 rounded-full bg-white/10 px-4 py-2 text-white/85 backdrop-blur mono text-[11px] tracking-[.18em] md:hidden">Tipp: Tippe auf „PACK ÖFFNEN“</div>
                 </div>
               </div>
 
@@ -378,6 +281,7 @@
                 <circle cx="260" cy="118" r="34" stroke="rgba(255,255,255,.8)" stroke-width="6"/>
               </svg>
             </div>
+
           </div>
         </div>
       </div>
@@ -402,7 +306,7 @@
         </div>
 
         <footer class="mt-8 flex flex-col gap-2 text-white/70 md:flex-row md:items-center md:justify-between">
-          <p class="mono text-[11px] tracking-[.18em]">MALLE 2026 SAMMELSPAß 2026 • PRIVAT GEFÜHRT • KEIN GEWERBE</p>
+          <p class="mono text-[11px] tracking-[.18em]">MALLE 2026 SAMMELSPAß • PRIVAT • KEIN GEWERBE</p>
         </footer>
       </div>
 
@@ -410,13 +314,7 @@
   </main>
 
   <script>
-    // Configure your PayPal URL here (works on GitHub Pages)
-    const PAYPAL_URL = "https://www.paypal.me/thanne41"; // TODO: replace with your PayPal.me or PayPal checkout URL
-
-    // IMPORTANT for GitHub Pages:
-    // Put the sticker PNGs in the SAME folder as this HTML file (or in ./assets/) and make sure the filenames match exactly.
-    // Then the image paths below will work.
-
+    const PAYPAL_URL = "https://www.paypal.me/thanne41";
 
     const paypalBtn = document.getElementById('paypalLink');
     const copyBtn = document.getElementById('copyLink');
@@ -436,64 +334,64 @@
     const openBtn = document.getElementById('openBtn');
     const pack = document.getElementById('pack');
     const stage = document.getElementById('stickerStage');
-    const spark = document.getElementById('spark');
     const uploadPhoto = document.getElementById('uploadPhoto');
 
     const stickers = [
-      { name: 'FLORIAN H.', badge: 'DE', tint: 'gold', img: 'assets/sticker/florian.h.png' },
-      { name: 'NILS T.', badge: 'DE', tint: 'red', img: 'assets/sticker/nils-t.png' },
-      { name: 'LENNARD S.', badge: 'DE', tint: 'blue', img: 'assets/sticker/lennard-s.png' },
-      { name: 'MATTHIS H.', badge: 'DE', tint: 'gold', img: 'assets/sticker/matthis-h.png' },
-      { name: 'SVEN W.', badge: 'DE', tint: 'red', img: 'assets/sticker/sven-w.png' },
-      { name: 'NILS W.', badge: 'DE', tint: 'blue', img: 'assets/sticker/nils-w.png' },
+      { name: 'FLORIAN H.', img: 'assets/sticker/florian.h.png' },
+      { name: 'NILS T.', img: 'assets/sticker/nils-t.png' },
+      { name: 'LENNARD S.', img: 'assets/sticker/lennard-s.png' },
+      { name: 'MATTHIS H.', img: 'assets/sticker/matthis-h.png' },
+      { name: 'SVEN W.', img: 'assets/sticker/sven-w.png' },
+      { name: 'NILS W.', img: 'assets/sticker/nils-w.png' },
     ];
 
     let opened = false;
 
-    function makeSticker(i){
+    function shuffle(arr){
+      const a = [...arr];
+      for(let i=a.length-1;i>0;i--){
+        const j = Math.floor(Math.random()*(i+1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    function slotPositions(){
+      // Neat fan layout that guarantees visibility
+      return [
+        { tx: -200, ty: 96,  r: -18 },
+        { tx: -118, ty: 34,  r: -10 },
+        { tx: -36,  ty: 8,   r: -4  },
+        { tx:  46,  ty: 22,  r: 6   },
+        { tx: 128,  ty: 60,  r: 14  },
+        { tx:  10,  ty: 128, r: 2   },
+      ];
+    }
+
+    function makeSticker(i, sticker){
       const s = document.createElement('div');
       s.className = 'sticker';
 
-      const r = (Math.random()*18 - 9).toFixed(2) + 'deg';
+      const slots = slotPositions();
+      const p = slots[i % slots.length];
 
-      // wider, more vertical spread so all 6 can be seen on mobile
-      const tx = (Math.random()*460 - 230).toFixed(1) + 'px';
-      const ty = (Math.random()*380 - 190).toFixed(1) + 'px';
+      // tiny wobble so it doesn't look computer-perfect
+      const wob = () => (Math.random()*10 - 5);
 
-      s.style.setProperty('--r', r);
-      s.style.setProperty('--tx', tx);
-      s.style.setProperty('--ty', ty);
-
-      s.style.left = '50%';
-      s.style.top = '50%';
-
-      // Make the sticker itself just the image (no extra pack-style label overlays)
-      s.style.width = '144px';
-      s.style.height = '202px';
-      s.style.borderRadius = '12px';
-      s.style.background = 'transparent';
-      s.style.border = '0';
-      s.style.boxShadow = '0 18px 50px rgba(0,0,0,.28)';
+      s.style.setProperty('--r', (p.r + wob()).toFixed(2) + 'deg');
+      s.style.setProperty('--tx', (p.tx + wob()*2.8).toFixed(1) + 'px');
+      s.style.setProperty('--ty', (p.ty + wob()*2.2).toFixed(1) + 'px');
 
       const img = document.createElement('img');
-      img.alt = stickers[i % stickers.length].name;
+      img.alt = sticker.name;
       img.loading = 'eager';
       img.decoding = 'async';
-      img.src = stickers[i % stickers.length].img;
-      img.style.width = '100%';
-      img.style.height = '100%';
-      img.style.objectFit = 'contain';
-      img.style.display = 'block';
-      img.style.borderRadius = '12px';
-      img.style.background = 'transparent';
-
-      // subtle shadow/lift only
-      img.style.filter = 'drop-shadow(0 10px 24px rgba(0,0,0,.25))';
+      img.src = sticker.img;
 
       s.appendChild(img);
 
-      // slower + sequential cadence so every sticker gets its moment
-      s.style.animation = `pop 980ms cubic-bezier(.2,.95,.15,1) ${i*220}ms both`;
+      // sequential deal
+      s.style.animation = `deal 980ms cubic-bezier(.2,.95,.15,1) ${i*220}ms both`;
       return s;
     }
 
@@ -501,43 +399,30 @@
       if(opened) return;
       opened = true;
 
-      // reset running animations
+      // reset
       pack.style.animation = 'none';
-      pack.offsetHeight; // reflow
-
-      // wiggle + rip-open illusion
-      pack.style.animation = 'packWiggle 640ms ease-in-out 0ms 1 both';
-      spark.style.animation = 'sparkOn 520ms ease-out 40ms 1 both';
-
-      // rip effect: reveal that the pack is "opening" from the top
       pack.style.clipPath = 'inset(0 0 0 0 round 18px)';
-      pack.animate([
-        { clipPath: 'inset(0 0 0 0 round 18px)' },
-        { clipPath: 'inset(0 0 58% 0 round 18px)' },
-        { clipPath: 'inset(0 0 68% 0 round 18px)' }
-      ], { duration: 740, easing: 'cubic-bezier(.2,.95,.15,1)', fill: 'forwards' });
+      pack.offsetHeight;
+
+      // wiggle + SIDE tear
+      pack.style.animation = 'packWiggle 640ms ease-in-out 0ms 1 both, ripSide 760ms cubic-bezier(.2,.95,.15,1) 80ms 1 both';
 
       // clear old
       stage.innerHTML = '';
 
-      // random order each time
-      const order = [...stickers].sort(() => Math.random() - 0.5);
+      const order = shuffle(stickers);
 
-      // drop stickers in sequence
       for(let i=0;i<order.length;i++){
         stage.appendChild(makeSticker(i, order[i]));
       }
 
-      // slight haptic vibe on supported devices
       if(navigator.vibrate) navigator.vibrate([15, 30, 15]);
 
-      // re-open allowed after the full sequence finishes
-      setTimeout(()=>{ opened = false; }, (stickers.length * 220) + 1200);
+      setTimeout(()=>{ opened = false; }, (order.length * 220) + 1300);
     }
 
     openBtn.addEventListener('click', openPack);
 
-    // keyboard support
     openBtn.addEventListener('keydown', (e)=>{
       if(e.key === 'Enter' || e.key === ' '){
         e.preventDefault();
@@ -550,15 +435,10 @@
       uploadPhoto.addEventListener('change', () => {
         const f = uploadPhoto.files && uploadPhoto.files[0];
         if(!f) return;
-        const old = copyBtn.innerHTML;
-        copyBtn.innerHTML = '<span class="mono text-[12px] tracking-[.18em]">FOTO OK</span><span aria-hidden="true">✓</span>';
-        setTimeout(()=> copyBtn.innerHTML = old, 1100);
+        const hint = document.getElementById('uploadHint');
+        if(hint) hint.classList.remove('hidden');
       });
     }
-
-    // auto-open if URL has ?open=1
-    const params = new URLSearchParams(location.search);
-    if(params.get('open') === '1') setTimeout(openPack, 500);
   </script>
 </body>
 </html>
