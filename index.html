@@ -178,8 +178,56 @@
       padding-right: 14px;
     }
 
+    /* scroll hint (mobile) */
+    .scroll-hint{
+      position: sticky;
+      bottom: 10px;
+      z-index: 30;
+      display: flex;
+      justify-content: center;
+      pointer-events: none;
+    }
+    .scroll-hint .pill{
+      pointer-events: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.22);
+      background: linear-gradient(180deg, rgba(17,24,39,.55), rgba(17,24,39,.30));
+      backdrop-filter: blur(10px);
+      color: rgba(255,255,255,.92);
+      box-shadow: 0 16px 50px rgba(0,0,0,.22);
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      font-size: 11px;
+      font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      opacity: .95;
+      transform: translateY(0);
+      animation: hintBob 1.25s ease-in-out infinite;
+    }
+    .scroll-hint .chev{
+      width: 10px;
+      height: 10px;
+      border-right: 2px solid rgba(255,255,255,.85);
+      border-bottom: 2px solid rgba(255,255,255,.85);
+      transform: rotate(45deg);
+      margin-left: 2px;
+    }
+
+    @keyframes hintBob{
+      0%,100%{ transform: translateY(0); opacity: .92; }
+      50%{ transform: translateY(-6px); opacity: 1; }
+    }
+
+    @media (min-width: 768px){
+      .scroll-hint{ display:none; }
+    }
+
     @media (prefers-reduced-motion: reduce){
       *{ animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+      .scroll-hint .pill{ animation: none !important; }
     }
   </style>
 </head>
@@ -200,6 +248,10 @@
               <span class="mono text-[12px] tracking-[.18em]">PACK ÖFFNEN</span>
               <span aria-hidden="true" class="text-lg">▸</span>
             </button>
+            <a id="cameraJump" class="btn btn-ghost" href="#upload" aria-label="Kamera / Foto">
+              <span class="mono text-[12px] tracking-[.18em] hidden md:inline">KAMERA / FOTO</span>
+              <span aria-hidden="true">📷</span>
+            </a>
             <a id="beerBtn" class="btn btn-ghost" href="#beer" aria-label="Buy us a beer">
               <span class="mono text-[12px] tracking-[.18em] hidden md:inline">BUY US A BEER</span>
               <span aria-hidden="true">🍺</span>
@@ -209,6 +261,13 @@
       </div>
 
       <div class="pitch mt-3 md:mt-10" style="scroll-margin-top: 18px;">
+
+        <div id="scrollHint" class="scroll-hint" aria-hidden="true">
+          <div class="pill">
+            <span>Scroll</span>
+            <span class="chev"></span>
+          </div>
+        </div>
 
         <!-- 1) Pack + Animation (full width, then Zeig's uns) -->
         <div class="mx-auto max-w-6xl px-5 py-10 md:py-14">
@@ -227,7 +286,7 @@
               </div>
             </div>
 
-            <div class="relative order-2 md:order-1">
+            <div class="relative order-2 md:order-1" id="upload">
               <div class="mt-5 rounded-3xl border border-white/25 bg-gradient-to-br from-white/18 via-white/10 to-white/6 p-5 text-white/95 backdrop-blur" style="box-shadow: 0 26px 80px rgba(0,0,0,.25);">
                 <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                   <div class="max-w-xl">
@@ -238,8 +297,8 @@
 
                   <div class="flex flex-col gap-3 sm:flex-row sm:items-center">
                   <label class="btn btn-primary" style="min-width: 210px; box-shadow: 0 18px 60px rgba(0,0,0,.25);">
-                    <input id="uploadPhoto" type="file" accept="image/*" class="hidden" />
-                    <span class="mono text-[12px] tracking-[.18em]">FOTO WÄHLEN</span>
+                    <input id="uploadPhoto" type="file" accept="image/*" capture="environment" class="hidden" />
+                    <span class="mono text-[12px] tracking-[.18em]">KAMERA / FOTO</span>
                     <span aria-hidden="true">＋</span>
                   </label>
 
@@ -251,7 +310,7 @@
 
                   <button id="uploadBtn" class="btn" type="button" style="background: rgba(255,255,255,.14); border-color: rgba(255,255,255,.35); color:#fff; min-width: 210px; box-shadow: 0 18px 60px rgba(0,0,0,.18);">
                     <span class="mono text-[12px] tracking-[.18em]">UPLOAD STARTEN</span>
-                    <span aria-hidden="true">↗</span>
+                    <span aria-hidden="true" style="display:inline-block; transform: rotate(-45deg);">↗</span>
                   </button>
                 </div>
                 </div>
@@ -312,6 +371,17 @@
         window.prompt('Kopier den Link:', PAYPAL_URL);
       }
     });
+
+    const scrollHint = document.getElementById('scrollHint');
+
+    function hideScrollHint(){
+      if(!scrollHint) return;
+      scrollHint.style.display = 'none';
+    }
+
+    // Hide on first scroll / touch move
+    window.addEventListener('scroll', hideScrollHint, { once: true, passive: true });
+    window.addEventListener('touchmove', hideScrollHint, { once: true, passive: true });
 
     const openBtn = document.getElementById('openBtn');
     const pack = document.getElementById('pack');
