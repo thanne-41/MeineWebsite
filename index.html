@@ -366,11 +366,11 @@
                     </div>
                     <div class="pack-strip">
                       <div>
-                        <p class="mono text-[11px] tracking-[.18em] text-white/75">SERIE A: ARENAL</p>
-                        <p class="text-sm font-semibold">Originale Druckfehler inklusive</p>
+                        <p class="mono text-[11px] tracking-[.18em] text-white/75">WO KLEBT UNSER STICKER?</p>
+                        <p class="text-sm font-semibold">Bild hochladen (kommt als Nächstes)</p>
                       </div>
                       <div class="rounded-full bg-white/10 px-3 py-2 mono text-[11px] tracking-[.18em]">
-                        "LIMITED"
+                        "PACK"
                       </div>
                     </div>
                   </div>
@@ -419,7 +419,7 @@
 
   <script>
     // Configure your PayPal URL here (works on GitHub Pages)
-    const PAYPAL_URL = "https://www.paypal.me/DEINNAME";
+    const PAYPAL_URL = "#"; // TODO: replace with your PayPal.me or PayPal checkout URL
 
     const paypalBtn = document.getElementById('paypalLink');
     const copyBtn = document.getElementById('copyLink');
@@ -442,11 +442,12 @@
     const spark = document.getElementById('spark');
 
     const stickers = [
-      { name: 'EL ARENAL', badge: 'A1', tint: 'gold' },
-      { name: 'R9 PATCH', badge: 'B7', tint: 'red' },
-      { name: 'VFL', badge: 'C4', tint: 'blue' },
-      { name: 'PALMANINI', badge: 'D2', tint: 'gold' },
-      { name: 'MULLET', badge: 'E9', tint: 'red' },
+      { name: 'FLORIAN H.', badge: 'DE', tint: 'gold', img: 'Zeichenfla-che-1_1.png' },
+      { name: 'NILS T.', badge: 'DE', tint: 'red', img: 'Zeichenfla-che-1.png' },
+      { name: 'LENNARD S.', badge: 'DE', tint: 'blue', img: 'Zeichenfla-che-2.png' },
+      { name: 'MATTHIS H.', badge: 'DE', tint: 'gold', img: 'Zeichenfla-che-3.png' },
+      { name: 'SVEN W.', badge: 'DE', tint: 'red', img: 'Zeichenfla-che-4.png' },
+      { name: 'NILS W.', badge: 'DE', tint: 'blue', img: 'Zeichenfla-che-5.png' },
     ];
 
     let opened = false;
@@ -467,44 +468,37 @@
       s.style.left = '50%';
       s.style.top = '50%';
 
-      // inner graphic (simple, distinctive)
+      // inner graphic (actual sticker image)
       const inner = document.createElement('div');
       inner.style.position = 'absolute';
       inner.style.inset = '10px 10px 54px';
       inner.style.borderRadius = '12px';
       inner.style.border = '2px solid rgba(17,24,39,.88)';
+      inner.style.background = 'rgba(255,255,255,.9)';
+      inner.style.overflow = 'hidden';
 
-      const tint = stickers[i % stickers.length].tint;
-      if(tint === 'gold'){
-        inner.style.background = 'linear-gradient(180deg, rgba(245,158,11,.96), rgba(255,255,255,.0)), radial-gradient(280px 180px at 10% 25%, rgba(255,255,255,.35), transparent 60%), linear-gradient(180deg, rgba(255,255,255,.25), rgba(0,0,0,.0))';
-      } else if(tint === 'red'){
-        inner.style.background = 'linear-gradient(180deg, rgba(225,29,72,.85), rgba(255,255,255,.0)), radial-gradient(260px 160px at 20% 25%, rgba(255,255,255,.32), transparent 60%)';
-      } else {
-        inner.style.background = 'linear-gradient(180deg, rgba(36,71,255,.85), rgba(255,255,255,.0)), radial-gradient(260px 160px at 20% 25%, rgba(255,255,255,.32), transparent 60%)';
-      }
+      const img = document.createElement('img');
+      img.alt = stickers[i % stickers.length].name;
+      img.loading = 'eager';
+      img.decoding = 'async';
+      img.src = stickers[i % stickers.length].img;
+      img.style.width = '100%';
+      img.style.height = '100%';
+      img.style.objectFit = 'cover';
+      img.style.imageRendering = 'auto';
+      img.style.filter = 'saturate(1.05) contrast(1.02)';
 
-      // tiny star pattern hint
-      inner.style.backgroundImage += ', radial-gradient(circle, rgba(255,255,255,.85) 1.2px, transparent 1.3px)';
-      inner.style.backgroundSize = 'auto, auto, auto, 22px 22px';
-      inner.style.backgroundPosition = '0 0, 0 0, 0 0, 0 0';
+      // tiny print wear overlay
+      const wear = document.createElement('div');
+      wear.style.position = 'absolute';
+      wear.style.inset = '0';
+      wear.style.background = 'repeating-linear-gradient(0deg, rgba(0,0,0,.06), rgba(0,0,0,.06) 1px, transparent 1px, transparent 4px)';
+      wear.style.opacity = '.28';
+      wear.style.mixBlendMode = 'multiply';
+      wear.style.pointerEvents = 'none';
 
-      // emblem mark
-      const mark = document.createElement('div');
-      mark.style.position = 'absolute';
-      mark.style.left = '12px';
-      mark.style.top = '12px';
-      mark.style.width = '42px';
-      mark.style.height = '42px';
-      mark.style.borderRadius = '12px';
-      mark.style.border = '2px solid rgba(17,24,39,.9)';
-      mark.style.background = 'rgba(255,255,255,.82)';
-      mark.style.display = 'grid';
-      mark.style.placeItems = 'center';
-      mark.style.fontFamily = 'JetBrains Mono, ui-monospace';
-      mark.style.fontWeight = '800';
-      mark.style.fontSize = '12px';
-      mark.style.letterSpacing = '.12em';
-      mark.textContent = stickers[i % stickers.length].badge;
+      inner.appendChild(img);
+      inner.appendChild(wear);
 
       const label = document.createElement('div');
       label.className = 'label';
@@ -516,7 +510,6 @@
         <div class="badge">#${String(i+1).padStart(2,'0')}</div>
       `;
 
-      inner.appendChild(mark);
       s.appendChild(inner);
       s.appendChild(label);
 
@@ -535,8 +528,8 @@
       // clear old
       stage.innerHTML = '';
 
-      // drop 5 stickers
-      for(let i=0;i<5;i++){
+      // drop 6 real stickers
+      for(let i=0;i<6;i++){
         stage.appendChild(makeSticker(i));
       }
 
