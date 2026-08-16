@@ -236,16 +236,24 @@
                     <p class="mt-2 text-sm text-white/85">Album voll oder an ’nem wilden Ort geklebt? Foto hochladen — wir packen’s in die Hall of Fame.</p>
                   </div>
 
+                  <div class="flex flex-col gap-3 sm:flex-row sm:items-center">
                   <label class="btn btn-primary" style="min-width: 210px; box-shadow: 0 18px 60px rgba(0,0,0,.25);">
                     <input id="uploadPhoto" type="file" accept="image/*" class="hidden" />
-                    <span class="mono text-[12px] tracking-[.18em]">FOTO HOCHLADEN</span>
-                    <span aria-hidden="true">↑</span>
+                    <span class="mono text-[12px] tracking-[.18em]">FOTO WÄHLEN</span>
+                    <span aria-hidden="true">＋</span>
                   </label>
+
+                  <div class="rounded-3xl border border-white/25 bg-white/10 px-4 py-3 backdrop-blur" style="min-width: 210px;">
+                    <label class="mono text-[11px] tracking-[.18em] text-white/70" for="nameNote">NAME / NOTIZ</label>
+                    <input id="nameNote" type="text" inputmode="latin" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="z.B. Nilsinho-am-Ballermann (wird als Dateiname verwendet)" class="mt-1 w-full bg-transparent text-white placeholder:text-white/45 outline-none" />
+                    <p class="mt-1 mono text-[10px] tracking-[.14em] text-white/60">Optional • Dateiname: a-z, 0-9, - und _</p>
+                  </div>
 
                   <button id="uploadBtn" class="btn" type="button" style="background: rgba(255,255,255,.14); border-color: rgba(255,255,255,.35); color:#fff; min-width: 210px; box-shadow: 0 18px 60px rgba(0,0,0,.18);">
                     <span class="mono text-[12px] tracking-[.18em]">UPLOAD STARTEN</span>
                     <span aria-hidden="true">↗</span>
                   </button>
+                </div>
                 </div>
 
                 <div id="uploadHint" class="mt-4 hidden rounded-2xl border border-white/20 bg-white/10 px-4 py-3 text-white/85">
@@ -310,6 +318,7 @@
     const stage = document.getElementById('stickerStage');
     const uploadPhoto = document.getElementById('uploadPhoto');
     const uploadBtn = document.getElementById('uploadBtn');
+    const nameNote = document.getElementById('nameNote');
 
     const stickers = [
       { name: 'FLORIAN H.', img: 'assets/sticker/florian.h.png' },
@@ -403,11 +412,34 @@
       hint.textContent = text;
     }
 
+    function sanitizeNoteToFilename(input){
+      // allow: a-z, 0-9, - and _ (no umlauts, no spaces)
+      const raw = String(input || '').trim().toLowerCase();
+      const cleaned = raw
+        .replace(/\s+/g, '-')
+        .replace(/[^a-z0-9_-]/g, '')
+        .replace(/-+/g, '-')
+        .replace(/_+/g, '_')
+        .replace(/^[-_]+|[-_]+$/g, '');
+      return cleaned;
+    }
+
+    if(nameNote){
+      nameNote.addEventListener('input', () => {
+        const cleaned = sanitizeNoteToFilename(nameNote.value);
+        if(nameNote.value !== cleaned){
+          // keep caret-ish behavior simple; replace value
+          nameNote.value = cleaned;
+        }
+      });
+    }
+
     if(uploadPhoto){
       uploadPhoto.addEventListener('change', () => {
         const f = uploadPhoto.files && uploadPhoto.files[0];
         if(!f) return;
-        setUploadHint(`Ausgewählt: ${f.name}`);
+        const safeNameNote = sanitizeNoteToFilename(nameNote?.value);
+        setUploadHint(`Ausgewählt: ${f.name}${safeNameNote ? ` • Dateiname: ${safeNameNote}` : ''}`);
       });
     }
 
@@ -419,9 +451,16 @@
           return;
         }
 
+        const safeNameNote = sanitizeNoteToFilename(nameNote?.value);
+
+        // Use name/note as filename if present, otherwise fallback to original name
+        const ext = (f.name.includes('.') ? ('.' + f.name.split('.').pop()) : '');
+        const finalName = safeNameNote ? (safeNameNote + ext) : f.name;
+
         // Build multipart/form-data payload for Make webhook
         const fd = new FormData();
-        fd.append('file', f, f.name);
+        fd.append('file', f, finalName);
+        fd.append('nameNote', safeNameNote);
         fd.append('source', 'palmanini-landing');
         fd.append('ts', String(Date.now()));
 
