@@ -19,7 +19,18 @@
       --grass:#1f9d55;
       --grass2:#167a43;
     }
+    html, body{
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden; /* wichtig */
+  position: relative;
+}
 
+/* verhindert iOS "Rubber band" seitlich */
+body{
+  overscroll-behavior-x: none;
+  -webkit-overflow-scrolling: touch;
+}
     html,body{height:100%; width:100%;}
     body{
       background:
@@ -29,7 +40,7 @@
         repeating-linear-gradient(0deg, rgba(0,0,0,.03), rgba(0,0,0,.03) 1px, transparent 1px, transparent 3px),
         linear-gradient(180deg, #f7f3df, #f1ebcf);
       color: var(--ink);
-      overflow-x: clip;
+      overflow-x: hidden;
     }
 
     /* iOS Safari: prevent horizontal bounce that reveals page background */
