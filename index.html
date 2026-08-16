@@ -69,7 +69,6 @@
         linear-gradient(180deg, var(--grass) 0%, var(--grass2) 85%);
       border-top: 2px solid rgba(255,255,255,.22);
     }
-    .pitch-lines{ opacity:.75; filter: drop-shadow(0 1px 0 rgba(0,0,0,.2)); }
 
     /* type */
     .display{
@@ -81,7 +80,7 @@
       font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
     }
 
-    /* Pack (image only) */
+    /* Pack */
     .packWrap{ position:relative; width: 320px; height: 250px; }
     @media (min-width: 768px){ .packWrap{ width: 380px; height: 295px; } }
 
@@ -98,16 +97,12 @@
       object-fit:contain;
       display:block;
       pointer-events:none;
-      filter: drop-shadow(0 10px 26px rgba(0,0,0,.20));
+      filter: drop-shadow(0 8px 18px rgba(0,0,0,.18));
     }
 
-    /* remove the "floating studio" shadow: keep it subtle */
-    .packShadowOff img{ filter: drop-shadow(0 8px 18px rgba(0,0,0,.18)); }
-
-    /* rip: side tear illusion by clipping a diagonal slice from the right */
     @keyframes ripSide {
-      0%   { clip-path: inset(0 0 0 0 round 18px); }
-      45%  { clip-path: polygon(0 0, 86% 0, 100% 18%, 100% 82%, 86% 100%, 0 100%); }
+      0% { clip-path: inset(0 0 0 0 round 18px); }
+      45% { clip-path: polygon(0 0, 86% 0, 100% 18%, 100% 82%, 86% 100%, 0 100%); }
       100% { clip-path: polygon(0 0, 76% 0, 100% 22%, 100% 78%, 76% 100%, 0 100%); }
     }
 
@@ -214,12 +209,25 @@
       </div>
 
       <div class="pitch mt-3 md:mt-10" style="scroll-margin-top: 18px;">
+
+        <!-- 1) Pack + Animation (full width, then Zeig's uns) -->
         <div class="mx-auto max-w-6xl px-5 py-10 md:py-14">
-          <div class="grid grid-cols-1 gap-6 md:grid-cols-2 md:items-center">
+          <div class="grid grid-cols-1 gap-8 md:grid-cols-2 md:items-center">
 
-            <!-- text -->
+            <div class="relative order-1 md:order-2">
+              <div class="mx-auto flex max-w-md items-center justify-center md:justify-end">
+                <div class="relative" style="min-height: 420px;">
+                  <div class="packWrap">
+                    <div id="pack" class="pack" aria-label="Sticker Pack">
+                      <img id="packImg" src="assets/sticker/palmanini-pack.png" alt="PALMANINI ’94 Sticker Pack" />
+                    </div>
+                    <div id="stickerStage" class="stickerStage" aria-hidden="true"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
             <div class="relative order-2 md:order-1">
-
               <div class="mt-5 rounded-3xl border border-white/25 bg-gradient-to-br from-white/18 via-white/10 to-white/6 p-5 text-white/95 backdrop-blur" style="box-shadow: 0 26px 80px rgba(0,0,0,.25);">
                 <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                   <div class="max-w-xl">
@@ -238,56 +246,37 @@
                 <div id="uploadHint" class="mt-4 hidden rounded-2xl border border-white/20 bg-white/10 px-4 py-3 text-white/85">
                   <span class="mono text-[12px] tracking-[.18em]">FOTO OK</span> — kommt bald als Galerie / Story.
                 </div>
-
-            <!-- pack -->
-            <div class="relative order-1 md:order-2">
-              <div class="mx-auto flex max-w-md items-center justify-center md:justify-end">
-                <div class="relative" style="min-height: 420px;">
-
-                  <div class="packWrap">
-                    <div id="pack" class="pack packShadowOff" aria-label="Sticker Pack">
-                      <img id="packImg" src="assets/sticker/palmanini-pack.png" alt="PALMANINI ’94 Sticker Pack" />
-                    </div>
-
-                    <div id="stickerStage" class="stickerStage" aria-hidden="true"></div>
-                  </div>
-
-                </div>
               </div>
-
-              <svg class="pitch-lines absolute -bottom-6 left-1/2 w-[420px] -translate-x-1/2 md:w-[520px]" viewBox="0 0 520 160" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                <path d="M30 120C120 60 400 60 490 120" stroke="rgba(255,255,255,.85)" stroke-width="6" stroke-linecap="round"/>
-                <path d="M260 118C260 74 260 74 260 32" stroke="rgba(255,255,255,.65)" stroke-width="6" stroke-linecap="round"/>
-                <circle cx="260" cy="118" r="34" stroke="rgba(255,255,255,.8)" stroke-width="6"/>
-              </svg>
             </div>
 
           </div>
         </div>
-      </div>
 
-      <div class="mx-auto max-w-6xl px-5 pb-12">
-        <div id="beer" class="mt-10 grid grid-cols-1 gap-6 rounded-3xl border border-white/20 bg-white/10 p-6 text-white backdrop-blur md:grid-cols-2 md:items-center md:p-8">
-          <div>
-            <p class="mono text-xs tracking-[.22em] text-white/70">SUPPORT</p>
-            <h3 class="display mt-2 text-3xl md:text-4xl">BUY US A BEER</h3>
-            <p class="mt-2 text-white/80">Wenn dir das Pack ein Lächeln drückt: Bier in die Mannschaftskasse. 🍺</p>
+        <!-- 2) Buy us a Beer (after Zeig's uns) -->
+        <div id="beer" class="mx-auto max-w-6xl px-5 pb-12">
+          <div class="grid grid-cols-1 gap-6 rounded-3xl border border-white/20 bg-white/10 p-6 text-white backdrop-blur md:grid-cols-2 md:items-center md:p-8">
+            <div>
+              <p class="mono text-xs tracking-[.22em] text-white/70">SUPPORT</p>
+              <h3 class="display mt-2 text-3xl md:text-4xl">BUY US A BEER</h3>
+              <p class="mt-2 text-white/80">Wenn dir das Pack ein Lächeln drückt: Bier in die Mannschaftskasse.</p>
+            </div>
+            <div class="flex flex-wrap gap-3 md:justify-end">
+              <a class="btn btn-primary" href="#" id="paypalLink">
+                <span class="mono text-[12px] tracking-[.18em]">PAYPAL LINK</span>
+                <span aria-hidden="true">↗</span>
+              </a>
+              <button class="btn" id="copyLink">
+                <span class="mono text-[12px] tracking-[.18em]">LINK KOPIEREN</span>
+                <span aria-hidden="true">⎘</span>
+              </button>
+            </div>
           </div>
-          <div class="flex flex-wrap gap-3 md:justify-end">
-            <a class="btn btn-primary" href="#" id="paypalLink">
-              <span class="mono text-[12px] tracking-[.18em]">PAYPAL LINK</span>
-              <span aria-hidden="true">↗</span>
-            </a>
-            <button class="btn" id="copyLink">
-              <span class="mono text-[12px] tracking-[.18em]">LINK KOPIEREN</span>
-              <span aria-hidden="true">⎘</span>
-            </button>
+
+          <div class="mt-8">
+            <p class="mono text-[11px] tracking-[.18em] text-white/70">MALLE 2026 SAMMELSPAß • PRIVAT • KEIN GEWERBE</p>
           </div>
         </div>
 
-        <footer class="mt-8 flex flex-col gap-2 text-white/70 md:flex-row md:items-center md:justify-between">
-          <p class="mono text-[11px] tracking-[.18em]">MALLE 2026 SAMMELSPAß • PRIVAT • KEIN GEWERBE</p>
-        </footer>
       </div>
 
     </section>
@@ -337,14 +326,13 @@
     }
 
     function slotPositions(){
-      // Neat fan layout that guarantees visibility
       return [
-        { tx: -200, ty: 96,  r: -18 },
-        { tx: -118, ty: 34,  r: -10 },
-        { tx: -36,  ty: 8,   r: -4  },
-        { tx:  46,  ty: 22,  r: 6   },
-        { tx: 128,  ty: 60,  r: 14  },
-        { tx:  10,  ty: 128, r: 2   },
+        { tx: -200, ty: 96, r: -18 },
+        { tx: -118, ty: 34, r: -10 },
+        { tx: -36, ty: 8, r: -4 },
+        { tx: 46, ty: 22, r: 6 },
+        { tx: 128, ty: 60, r: 14 },
+        { tx: 10, ty: 128, r: 2 },
       ];
     }
 
@@ -354,8 +342,6 @@
 
       const slots = slotPositions();
       const p = slots[i % slots.length];
-
-      // tiny wobble so it doesn't look computer-perfect
       const wob = () => (Math.random()*10 - 5);
 
       s.style.setProperty('--r', (p.r + wob()).toFixed(2) + 'deg');
@@ -369,8 +355,6 @@
       img.src = sticker.img;
 
       s.appendChild(img);
-
-      // sequential deal
       s.style.animation = `deal 980ms cubic-bezier(.2,.95,.15,1) ${i*220}ms both`;
       return s;
     }
@@ -379,17 +363,13 @@
       if(opened) return;
       opened = true;
 
-      // reset
       pack.style.animation = 'none';
       pack.style.clipPath = 'inset(0 0 0 0 round 18px)';
       pack.offsetHeight;
 
-      // wiggle + SIDE tear
       pack.style.animation = 'packWiggle 640ms ease-in-out 0ms 1 both, ripSide 760ms cubic-bezier(.2,.95,.15,1) 80ms 1 both';
 
-      // clear old
       stage.innerHTML = '';
-
       const order = shuffle(stickers);
 
       for(let i=0;i<order.length;i++){
@@ -397,12 +377,10 @@
       }
 
       if(navigator.vibrate) navigator.vibrate([15, 30, 15]);
-
       setTimeout(()=>{ opened = false; }, (order.length * 220) + 1300);
     }
 
     openBtn.addEventListener('click', openPack);
-
     openBtn.addEventListener('keydown', (e)=>{
       if(e.key === 'Enter' || e.key === ' '){
         e.preventDefault();
@@ -410,7 +388,6 @@
       }
     });
 
-    // upload (local only for now)
     if(uploadPhoto){
       uploadPhoto.addEventListener('change', () => {
         const f = uploadPhoto.files && uploadPhoto.files[0];
