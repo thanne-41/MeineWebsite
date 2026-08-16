@@ -20,7 +20,7 @@
       --grass2:#167a43;
     }
 
-    html,body{height:100%;}
+    html,body{height:100%; width:100%;}
     body{
       background:
         radial-gradient(1400px 800px at 20% -10%, rgba(36,71,255,.18), transparent 55%),
@@ -29,7 +29,17 @@
         repeating-linear-gradient(0deg, rgba(0,0,0,.03), rgba(0,0,0,.03) 1px, transparent 1px, transparent 3px),
         linear-gradient(180deg, #f7f3df, #f1ebcf);
       color: var(--ink);
-      overflow-x:hidden;
+      overflow-x: clip;
+    }
+
+    /* iOS Safari: prevent horizontal bounce that reveals page background */
+    html, body{
+      overscroll-behavior-x: none;
+      touch-action: pan-y;
+    }
+
+    main{
+      overflow-x: clip;
     }
 
     /* subtle paper wear */
