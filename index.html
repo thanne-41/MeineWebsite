@@ -241,6 +241,11 @@
                     <span class="mono text-[12px] tracking-[.18em]">FOTO HOCHLADEN</span>
                     <span aria-hidden="true">↑</span>
                   </label>
+
+                  <button id="uploadBtn" class="btn" type="button" style="background: rgba(255,255,255,.14); border-color: rgba(255,255,255,.35); color:#fff; min-width: 210px; box-shadow: 0 18px 60px rgba(0,0,0,.18);">
+                    <span class="mono text-[12px] tracking-[.18em]">UPLOAD STARTEN</span>
+                    <span aria-hidden="true">↗</span>
+                  </button>
                 </div>
 
                 <div id="uploadHint" class="mt-4 hidden rounded-2xl border border-white/20 bg-white/10 px-4 py-3 text-white/85">
@@ -304,6 +309,7 @@
     const pack = document.getElementById('pack');
     const stage = document.getElementById('stickerStage');
     const uploadPhoto = document.getElementById('uploadPhoto');
+    const uploadBtn = document.getElementById('uploadBtn');
 
     const stickers = [
       { name: 'FLORIAN H.', img: 'assets/sticker/florian.h.png' },
@@ -388,12 +394,63 @@
       }
     });
 
+    const MAKE_WEBHOOK_URL = "https://hook.eu1.make.com/yxd9bp61ni1dre5at4q9q4o5ivncs5c4";
+
+    function setUploadHint(text){
+      const hint = document.getElementById('uploadHint');
+      if(!hint) return;
+      hint.classList.remove('hidden');
+      hint.textContent = text;
+    }
+
     if(uploadPhoto){
       uploadPhoto.addEventListener('change', () => {
         const f = uploadPhoto.files && uploadPhoto.files[0];
         if(!f) return;
-        const hint = document.getElementById('uploadHint');
-        if(hint) hint.classList.remove('hidden');
+        setUploadHint(`Ausgewählt: ${f.name}`);
+      });
+    }
+
+    if(uploadBtn){
+      uploadBtn.addEventListener('click', async () => {
+        const f = uploadPhoto?.files?.[0];
+        if(!f){
+          setUploadHint('Bitte erst ein Foto auswählen.');
+          return;
+        }
+
+        // Build multipart/form-data payload for Make webhook
+        const fd = new FormData();
+        fd.append('file', f, f.name);
+        fd.append('source', 'palmanini-landing');
+        fd.append('ts', String(Date.now()));
+
+        // UI state
+        const old = uploadBtn.innerHTML;
+        uploadBtn.disabled = true;
+        uploadBtn.style.opacity = '0.8';
+        uploadBtn.innerHTML = '<span class="mono text-[12px] tracking-[.18em]">UPLOADING…</span><span aria-hidden="true">⏳</span>';
+        setUploadHint('Upload läuft…');
+
+        try{
+          const res = await fetch(MAKE_WEBHOOK_URL, {
+            method: 'POST',
+            body: fd,
+          });
+
+          if(!res.ok){
+            throw new Error(`Upload fehlgeschlagen (${res.status})`);
+          }
+
+          setUploadHint('Upload fertig. Danke!');
+        } catch(err){
+          console.error(err);
+          setUploadHint('Upload fehlgeschlagen. Bitte nochmal.');
+        } finally {
+          uploadBtn.disabled = false;
+          uploadBtn.style.opacity = '1';
+          uploadBtn.innerHTML = old;
+        }
       });
     }
   </script>
